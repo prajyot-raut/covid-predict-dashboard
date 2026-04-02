@@ -166,6 +166,10 @@ codecure/
 	notebooks/
 ```
 
+### Demo
+
+- ![alt text](image.png)
+
 ### Frontend Files
 
 - `frontend/app/page.tsx`: dashboard orchestration and state

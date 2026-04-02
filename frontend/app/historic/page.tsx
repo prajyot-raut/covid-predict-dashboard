@@ -10,24 +10,24 @@ import {
   PandemicEvent,
   getCountryEvents,
   uniqueCountries,
-  uniqueDiseases
+  uniqueDiseases,
 } from "@/lib/pandemics";
 
 const Globe = dynamic(() => import("@/components/Globe"), {
   ssr: false,
-  loading: () => <PanelSkeleton className="h-[620px]" />
+  loading: () => <PanelSkeleton className="h-[620px]" />,
 });
 
 const WormGraph = dynamic(() => import("@/components/WormGraph"), {
   ssr: false,
-  loading: () => <PanelSkeleton className="h-[510px]" />
+  loading: () => <PanelSkeleton className="h-[510px]" />,
 });
 
 const events = pandemics as PandemicEvent[];
 const MIN_YEAR = Math.min(...events.map((event) => event.startYear));
 const MAX_YEAR = Math.max(...events.map((event) => event.endYear));
 const MAX_DEATH_TOLL = Math.max(
-  ...events.map((event) => event.deathTollMax ?? event.deathTollMin ?? 0)
+  ...events.map((event) => event.deathTollMax ?? event.deathTollMin ?? 0),
 );
 
 export default function Page() {
@@ -35,9 +35,10 @@ export default function Page() {
   const diseases = useMemo(() => uniqueDiseases(events), []);
   const defaultCountries = useMemo(() => pickDefaultCountries(events), []);
 
-  const [selectedCountries, setSelectedCountries] = useState<string[]>(defaultCountries);
+  const [selectedCountries, setSelectedCountries] =
+    useState<string[]>(defaultCountries);
   const [selectedCountry, setSelectedCountry] = useState<string | null>(
-    defaultCountries[0] ?? null
+    defaultCountries[0] ?? null,
   );
   const [diseaseFilter, setDiseaseFilter] = useState("All diseases");
   const [deathFloor, setDeathFloor] = useState(0);
@@ -66,7 +67,8 @@ export default function Page() {
     return events.filter((event) => {
       const diseasePass =
         diseaseFilter === "All diseases" || event.disease === diseaseFilter;
-      const deathPass = (event.deathTollMax ?? event.deathTollMin ?? 0) >= deathFloor;
+      const deathPass =
+        (event.deathTollMax ?? event.deathTollMin ?? 0) >= deathFloor;
       const timelinePass = event.startYear <= visibleUntilYear;
 
       return diseasePass && deathPass && timelinePass;
@@ -106,8 +108,9 @@ export default function Page() {
               </h1>
               <p className="mt-4 max-w-2xl text-base leading-7 text-slate-300">
                 This dashboard turns your historical outbreak dataset into an
-                interactive atlas with a movable globe, multi-country worm graph,
-                timeline playback, and instant drill-down on major events.
+                interactive atlas with a movable globe, multi-country worm
+                graph, timeline playback, and instant drill-down on major
+                events.
               </p>
             </div>
 
@@ -123,7 +126,9 @@ export default function Page() {
                   <p className="mt-3 text-3xl font-semibold text-white">
                     {metric.value}
                   </p>
-                  <p className="mt-2 text-sm text-slate-300">{metric.description}</p>
+                  <p className="mt-2 text-sm text-slate-300">
+                    {metric.description}
+                  </p>
                 </div>
               ))}
             </div>
@@ -149,7 +154,11 @@ export default function Page() {
                       All diseases
                     </option>
                     {diseases.map((disease) => (
-                      <option key={disease} className="bg-slate-950" value={disease}>
+                      <option
+                        key={disease}
+                        className="bg-slate-950"
+                        value={disease}
+                      >
                         {disease}
                       </option>
                     ))}
@@ -167,13 +176,16 @@ export default function Page() {
                       max={MAX_DEATH_TOLL}
                       step={Math.max(1, Math.round(MAX_DEATH_TOLL / 200))}
                       value={deathFloor}
-                      onChange={(event) => setDeathFloor(Number(event.target.value))}
+                      onChange={(event) =>
+                        setDeathFloor(Number(event.target.value))
+                      }
                       className="w-full accent-coral"
                     />
                     <span className="min-w-20 text-right text-sm text-white">
                       {new Intl.NumberFormat("en-US", {
-                        notation: deathFloor >= 1_000_000 ? "compact" : "standard",
-                        maximumFractionDigits: 1
+                        notation:
+                          deathFloor >= 1_000_000 ? "compact" : "standard",
+                        maximumFractionDigits: 1,
                       }).format(deathFloor)}
                     </span>
                   </div>
@@ -257,8 +269,9 @@ export default function Page() {
                 {selectedCountry ?? "Choose a country"}
               </h2>
               <p className="mt-3 text-sm text-slate-300">
-                Click any country marker on the globe to open the full scrollable
-                event list. This side panel keeps the latest selection visible.
+                Click any country marker on the globe to open the full
+                scrollable event list. This side panel keeps the latest
+                selection visible.
               </p>
 
               <div className="mt-6 space-y-3">
@@ -267,10 +280,16 @@ export default function Page() {
                     key={event.id}
                     className="rounded-3xl border border-white/10 bg-white/5 p-4"
                   >
-                    <p className="text-sm font-medium text-white">{event.event}</p>
+                    <p className="text-sm font-medium text-white">
+                      {event.event}
+                    </p>
                     <p className="mt-2 text-sm text-slate-300">{event.date}</p>
-                    <p className="mt-1 text-sm text-slate-300">{event.disease}</p>
-                    <p className="mt-1 text-sm text-slate-200">{event.death_toll}</p>
+                    <p className="mt-1 text-sm text-slate-300">
+                      {event.disease}
+                    </p>
+                    <p className="mt-1 text-sm text-slate-200">
+                      {event.death_toll}
+                    </p>
                   </article>
                 ))}
                 {modalEvents.length === 0 ? (
@@ -317,30 +336,33 @@ function PanelSkeleton({ className = "" }: { className?: string }) {
 function buildMetrics(events: PandemicEvent[]) {
   const countries = uniqueCountries(events);
   const topEvent = [...events].sort(
-    (a, b) => (b.deathTollMax ?? 0) - (a.deathTollMax ?? 0)
+    (a, b) => (b.deathTollMax ?? 0) - (a.deathTollMax ?? 0),
   )[0];
 
   return [
     {
       label: "Total Events",
       value: events.length.toString(),
-      description: "Historical outbreaks currently visible after timeline and filter cuts."
+      description:
+        "Historical outbreaks currently visible after timeline and filter cuts.",
     },
     {
       label: "Country Coverage",
       value: countries.length.toString(),
-      description: "Countries with at least one mapped outbreak in the normalized dataset."
+      description:
+        "Countries with at least one mapped outbreak in the normalized dataset.",
     },
     {
       label: "Top Event",
       value: topEvent?.event ?? "Unknown",
-      description: "Highest estimated death toll among the visible events."
+      description: "Highest estimated death toll among the visible events.",
     },
     {
       label: "Timeline Extent",
       value: `${Math.abs(MIN_YEAR)} BC - ${MAX_YEAR}`,
-      description: "Historical range represented in the current dashboard dataset."
-    }
+      description:
+        "Historical range represented in the current dashboard dataset.",
+    },
   ];
 }
 

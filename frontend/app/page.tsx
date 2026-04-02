@@ -2,11 +2,13 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 
 import Header from "@/components/Header";
 import MapSidebar from "@/components/MapSidebar";
 import ForecastChart from "@/components/ForecastChart";
 import StatCard from "@/components/StatCard";
+import "./globals.css";
 
 import { api, type ForecastResponse } from "@/lib/api";
 import { getCountryCoords } from "@/lib/countryCoords";
@@ -185,6 +187,16 @@ export default function DashboardPage() {
       <Header apiStatus={apiStatus} regionsCount={regions.length} />
 
       <main className="flex-1 p-4 sm:p-6 flex flex-col gap-5 max-w-screen-2xl mx-auto w-full">
+        <section className="flex justify-end slide-up">
+          <Link
+            href="/historic"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-secondary)] hover:bg-[var(--bg-card-hover)] text-sm font-semibold text-[var(--text-primary)] transition-colors"
+          >
+            <span>View Historic Pandemics</span>
+            <span aria-hidden>→</span>
+          </Link>
+        </section>
+
         {/* ── Hero stat row ── */}
         <section className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <StatCard
