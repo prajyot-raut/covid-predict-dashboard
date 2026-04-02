@@ -49,7 +49,9 @@ async function resolveBaseUrl(): Promise<string> {
     }
   }
 
-  throw new Error("Unable to reach backend API. Start backend on port 8000 or 8080, or set NEXT_PUBLIC_API_URL.");
+  throw new Error(
+    "Unable to reach backend API. Start backend on port 8000 or 8080, or set NEXT_PUBLIC_API_URL.",
+  );
 }
 
 async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
